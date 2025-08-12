@@ -19,13 +19,12 @@ function buildTextPrompt({ corpus, query }) {
   "answers": ["..."]
 }
 
-Rules:
-- Extract exact substrings or tokens from the corpus that satisfy the query.
-- Keep answers concise; maintain their original case.
-- If the query lists target tokens (e.g., "R,r"), return occurrences in a reasonable reading order.
-- Do not include explanations outside JSON.
+Examples:
+Corpus: ABcabCB
+Query: B,c
+Expected JSON: { "answers": ["B","c","C"] }
 
-Query: ${query}
+User Query: ${query}
 ---
 Corpus:
 ${corpus}
@@ -61,14 +60,13 @@ export async function searchWithGemini({ content, query, apiKey, model = DEFAULT
     parsed = JSON.parse(maybe);
   } catch (_) {
     // Fallback: naive tokenization by commas/spaces
-    const tokens = String(query).split(/[;,\s]+/).filter(Boolean);
-    const found = [];
-    const lower = corpus;
-    tokens.forEach(t => {
-      const re = new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), 'g');
-      let m; while ((m = re.exec(lower)) && found.length < 50) { found.push(m[0]); }
-    });
-    parsed = { answers: found };
+  const tokens = String(query).split(/[;,\s]+/).filter(Boolean);
+  const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const alt = tokens.length ? `(${tokens.map(esc).join('|')})` : '';
+  const re = alt ? new RegExp(alt, 'g') : null;
+  const found = [];
+  if (re) { let m; while ((m = re.exec(corpus)) && found.length < 200) { found.push(m[0]); } }
+  parsed = { answers: found };
   }
 
   const answers = Array.isArray(parsed?.answers) ? parsed.answers.filter(x => typeof x === 'string' && x.length > 0) : [];

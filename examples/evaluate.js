@@ -18,12 +18,30 @@ const __dirname = path.dirname(__filename);
 
 function parseArgs(argv) {
   const args = { k: 10, dataset: path.join(__dirname, "dataset.sample.json"), concurrency: 2, model: undefined, nocache: false, saveRaw: false, dry: false };
+  const isFlag = (s) => typeof s === 'string' && s.startsWith('--');
+  const nextVal = (i) => (i + 1 < argv.length && !isFlag(argv[i + 1])) ? argv[i + 1] : undefined;
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
-    if (a === "--dataset" && argv[i + 1]) { args.dataset = path.resolve(argv[++i]); continue; }
-    if (a === "--k" && argv[i + 1]) { args.k = Math.max(1, parseInt(argv[++i], 10) || 10); continue; }
-    if (a === "--concurrency" && argv[i + 1]) { args.concurrency = Math.max(1, parseInt(argv[++i], 10) || 2); continue; }
-    if (a === "--model" && argv[i + 1]) { args.model = argv[++i]; continue; }
+    if (a === "--dataset") {
+      const v = nextVal(i);
+      if (v) { args.dataset = path.resolve(v); i++; } else { console.warn("[Args] --dataset requires a path; using default:", args.dataset); }
+      continue;
+    }
+    if (a === "--k") {
+      const v = nextVal(i);
+      if (v) { const n = parseInt(v, 10); if (!Number.isNaN(n)) args.k = Math.max(1, n); i++; } else { console.warn("[Args] --k requires a number; using:", args.k); }
+      continue;
+    }
+    if (a === "--concurrency") {
+      const v = nextVal(i);
+      if (v) { const n = parseInt(v, 10); if (!Number.isNaN(n)) args.concurrency = Math.max(1, n); i++; } else { console.warn("[Args] --concurrency requires a number; using:", args.concurrency); }
+      continue;
+    }
+    if (a === "--model") {
+      const v = nextVal(i);
+      if (v) { args.model = v; i++; } else { console.warn("[Args] --model requires a value; using default model"); }
+      continue;
+    }
     if (a === "--nocache") { args.nocache = true; continue; }
     if (a === "--saveRaw") { args.saveRaw = true; continue; }
     if (a === "--dry") { args.dry = true; continue; }
@@ -34,22 +52,6 @@ function parseArgs(argv) {
 function ensureDir(p) { if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true }); }
 function readJSON(p, fallback) { try { return JSON.parse(fs.readFileSync(p, "utf-8")); } catch { return fallback; } }
 function writeJSON(p, data) { fs.writeFileSync(p, JSON.stringify(data, null, 2), "utf-8"); }
-
-function normalizeUrl(u) {
-  if (!u) return "";
-  try {
-    const url = new URL(u);
-    const host = url.hostname.toLowerCase();
-    const proto = url.protocol.toLowerCase();
-    let pathname = url.pathname || "/";
-    if (pathname.length > 1 && pathname.endsWith("/")) pathname = pathname.slice(0, -1);
-    const qs = url.search ?? "";
-    return `${proto}//${host}${pathname}${qs}`;
-  } catch {
-    // Fallback: lowercase and trim trailing slash
-    return String(u).trim().toLowerCase().replace(/\/$/, "");
-  }
-}
 
 function uniqueOrder(list) {
   const seen = new Set();
@@ -105,16 +107,15 @@ function djb2(str) {
 }
 
 async function baselineSearch({ content, query, k }) {
-  // Heuristic: return URLs present in content, ranked by simple keyword overlap with query.
+  // Heuristic: find exact tokens listed in query.
   const text = Array.isArray(content) ? content.join("\n") : String(content || "");
-  const urls = Array.from(new Set(text.match(/https?:\/\/[\w\-\.\/%#?=&]+/gi) || []));
-  const tokens = new Set(String(query || "").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean));
-  const scored = urls.map((u) => {
-    const uLow = u.toLowerCase();
-    let score = 0; tokens.forEach((t) => { if (uLow.includes(t)) score++; });
-    return { url: u, score };
-  }).sort((a, b) => b.score - a.score);
-  return { sites: scored.slice(0, k).map(s => ({ url: s.url, score: s.score })) };
+  const tokens = String(query || "").split(/[;,\s]+/).filter(Boolean);
+  const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const alt = tokens.length ? `(${tokens.map(esc).join('|')})` : '';
+  const re = alt ? new RegExp(alt, 'g') : null;
+  const found = [];
+  if (re) { let m; while ((m = re.exec(text)) && found.length < k) { found.push(m[0]); } }
+  return { answers: found };
 }
 
 function multisetFromList(list) {
@@ -140,42 +141,29 @@ function prfForText(pred, truth) {
 }
 
 async function runOne({ item, apiKey, model, k, cacheDir, useCache, saveRaw, dry }) {
-  const keyObj = { c: item.content, q: item.query, m: model, k };
+  const keyObj = { c: item.content, q: item.query, m: model, k, v: 'text-v3' };
   const key = djb2(JSON.stringify(keyObj));
   const cachePath = path.join(cacheDir, `${key}.json`);
   if (useCache && fs.existsSync(cachePath)) {
     const cached = readJSON(cachePath, null);
     if (cached) {
-      console.log(`[Cache] ${item.name}: ${cached.pred?.length ?? 0} site(s)`, (cached.pred || []).slice(0, 10));
+      console.log(`[Cache] ${item.name}: ${cached.pred?.length ?? 0} answer(s)`, (cached.pred || []).slice(0, 10));
       return { name: item.name, pred: cached.pred, elapsedMs: cached.elapsedMs, fromCache: true };
     }
   }
 
   const start = Date.now();
-  let sites; let answers;
+  let answers;
   if (dry) {
-    if ((item.type || 'url') === 'url') {
-      ({ sites } = await baselineSearch({ content: item.content, query: item.query, k }));
-    } else {
-      // simple baseline: find exact characters listed in query, in order of appearance
-      const text = Array.isArray(item.content) ? item.content.join("\n") : String(item.content || "");
-      const tokens = String(item.query || "").split(/[;,\s]+/).filter(Boolean);
-      const found = [];
-      for (const t of tokens) {
-        const re = new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), 'g');
-        let m; while ((m = re.exec(text)) && found.length < k) { found.push(m[0]); }
-      }
-      answers = found;
-    }
+    ({ answers } = await baselineSearch({ content: item.content, query: item.query, k }));
   } else {
-    const mode = (item.type || 'url') === 'text' ? 'text' : 'url';
-    const res = await searchWithGemini({ content: item.content, query: item.query, apiKey, model, mode });
-    sites = res.sites; answers = res.answers;
-    const count = mode === 'text' ? (answers?.length || 0) : (Array.isArray(sites) ? sites.length : 0);
-    const preview = mode === 'text' ? (answers || []).slice(0, k) : (sites || []).map(x => x?.url).filter(Boolean).slice(0, k);
-    console.log(`[Gemini] ${item.name}: ${count} ${mode === 'text' ? 'answer(s)' : 'site(s)'} `, preview);
-    const rawLen = typeof raw === 'string' ? raw.length : 0;
-    const rawPreview = typeof raw === 'string' ? raw.slice(0, 300).replace(/\s+/g, ' ').trim() : '';
+  const res = await searchWithGemini({ content: item.content, query: item.query, apiKey, model });
+  answers = res.answers; const raw = res.raw;
+    const count = answers?.length || 0;
+    const preview = (answers || []).slice(0, k);
+    console.log(`[Gemini] ${item.name}: ${count} answer(s)`, preview);
+  const rawLen = typeof raw === 'string' ? raw.length : 0;
+  const rawPreview = typeof raw === 'string' ? raw.slice(0, 300).replace(/\s+/g, ' ').trim() : '';
     console.log(`[Gemini] Raw preview (${rawLen} chars):`, rawPreview);
     if (!count) {
       console.error(`[Gemini] No results for "${item.name}". Likely an issue with API key/quota/model/prompt or upstream response.`);
@@ -186,13 +174,10 @@ async function runOne({ item, apiKey, model, k, cacheDir, useCache, saveRaw, dry
     }
   }
   const elapsedMs = Date.now() - start;
-  const mode = (item.type || 'url');
-  const pred = mode === 'text'
-    ? uniqueOrder(answers || []).slice(0, k)
-    : uniqueOrder((sites || []).map((x) => normalizeUrl(x.url))).slice(0, k);
+  const pred = (answers || []).slice(0, k);
 
   if (useCache) writeJSON(cachePath, { pred, elapsedMs });
-  return { name: item.name, pred, elapsedMs, fromCache: false, mode };
+  return { name: item.name, pred, elapsedMs, fromCache: false };
 }
 
 async function promisePool(items, limit, worker) {
@@ -255,11 +240,7 @@ async function main() {
   }
 
   // Normalize truths
-  dataset = dataset.map((d) => {
-    const mode = (d.type || 'url');
-    if (mode === 'text') return { ...d, truth: uniqueOrder((d.truth || []).map(x => String(x))) };
-    return { ...d, truth: uniqueOrder((d.truth || []).map(normalizeUrl)) };
-  });
+  dataset = dataset.map((d) => ({ ...d, truth: uniqueOrder((d.truth || []).map(x => String(x))) }));
 
   const cacheDir = path.join(__dirname, ".cache");
   if (!args.nocache) ensureDir(cacheDir);
@@ -275,10 +256,9 @@ async function main() {
     const item = dataset[i];
     const r = perItem[i];
     if (r?.error) { rows.push({ name: item.name, error: r.error }); continue; }
-  const mode = (item.type || 'url');
-  const pred = (r.pred || []).map(x => mode === 'text' ? String(x) : normalizeUrl(x));
+  const pred = (r.pred || []).map(x => String(x));
   const truth = item.truth;
-  const prf = mode === 'text' ? prfForText(pred, truth) : precisionRecallF1(pred, truth);
+  const prf = prfForText(pred, truth);
   const ap = averagePrecision(pred, truth);
   const rr = reciprocalRank(pred, truth);
   const ndcg = ndcgAtK(pred, truth, args.k);

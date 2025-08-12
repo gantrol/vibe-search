@@ -19,22 +19,22 @@ The library exposes `searchWithGemini({ content, query, apiKey, model? })`.
   - apiKey: string — your Gemini API key
   - model?: string — model name (default: `gemini-2.5-flash`)
 - Output
-  - `{ sites: Array<{ url, title?, score, evidence? }>, raw }`
+  - `{ answers: string[], raw }`
 
 Example:
 
 ```js
 import { searchWithGemini } from "./src/index.js";
 
-const { sites, raw } = await searchWithGemini({
+const { answers, raw } = await searchWithGemini({
   content: [
     "Node.js: https://nodejs.org/en/",
     "Google AI Studio: https://aistudio.google.com/",
   ],
-  query: "Where can I learn Node.js and Gemini?",
+  query: "Extract all occurrences of 'R' or 'r' from 'StrawbeRry'",
   apiKey: process.env.GEMINI_API_KEY,
 });
-console.log(sites);
+console.log(answers);
 ```
 
 Run the example script:
@@ -56,7 +56,7 @@ It supports a baseline dry run (no API calls), JSON datasets, basic caching, and
 # Dry run (fast):
 node examples/evaluate.js --dry --dataset examples/dataset.sample.json --k 5 --concurrency 2
 
-# Real model:
+# Real model (text-only):
 $env:GEMINI_API_KEY = "<your-key>"; node examples/evaluate.js --dataset examples/dataset.sample.json --k 5 --concurrency 2 --model gemini-2.5-flash
 ```
 

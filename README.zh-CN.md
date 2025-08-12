@@ -18,22 +18,22 @@ npm i
   - apiKey: string — Gemini API Key（建议放在环境变量）
   - model?: string — 模型名，默认为 `gemini-2.5-flash`
 - 输出
-  - `{ sites: Array<{ url, title?, score, evidence? }>, raw }`
+  - `{ answers: string[], raw }`
 
 示例：
 
 ```js
 import { searchWithGemini } from "./src/index.js";
 
-const { sites, raw } = await searchWithGemini({
+const { answers, raw } = await searchWithGemini({
   content: [
     "Node.js: https://nodejs.org/en/",
     "Google AI Studio: https://aistudio.google.com/",
   ],
-  query: "哪里可以学习 Node.js 与 Gemini?",
+  query: "从 'StrawbeRry' 中抽取所有 'R' 或 'r'",
   apiKey: process.env.GEMINI_API_KEY,
 });
-console.log(sites);
+console.log(answers);
 ```
 
 运行示例脚本：
