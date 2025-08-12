@@ -1,34 +1,16 @@
 # vibe-search
 
-LLM 抽卡搜索：使用 Google Gemini 在给定语料中直接检索相关网站的 Node.js 库。
+LLM 抽卡搜索：新型`string.search`，按你所需搜索。
 
 ## 安装
 
-### 从 GitHub 安装（推荐）
-
 ```bash
-# 直接从 GitHub 安装
-npm install git+https://github.com/gantrol/vibe-search.git
-
-# 或指定分支/标签
-npm install git+https://github.com/gantrol/vibe-search.git#main
-
-# 或使用 yarn
-yarn add git+https://github.com/gantrol/vibe-search.git
-```
-
-### 开发环境
-
-```bash
-# 克隆并安装依赖
-git clone https://github.com/gantrol/vibe-search.git
-cd vibe-search
-npm install
+npm i vibe-search
 ```
 
 ## 快速开始
 
-库暴露 `searchWithGemini({ content, query, apiKey, model? })`。
+`searchWithGemini({ content, query, apiKey, model? })`。
 
 - 输入
   - content: string | string[] — 被搜索内容（语料）

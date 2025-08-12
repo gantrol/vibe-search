@@ -1,162 +1,145 @@
-# vibe-search-gemini 使用指南
+# vibe-search Usage Guide
 
-## 安装
-
-### 方式一：直接从 GitHub 安装（推荐）
+## Installation
 
 ```bash
-npm install git+https://github.com/gantrol/vibe-search-gemini.git
+npm install vibe-search
 ```
 
-### 方式二：在 package.json 中添加依赖
+## Basic Usage
 
-```json
-{
-  "dependencies": {
-    "vibe-search-gemini": "git+https://github.com/gantrol/vibe-search-gemini.git"
-  }
-}
-```
-
-然后运行：
-```bash
-npm install
-```
-
-## 基本使用
-
-### 1. 导入库
+### 1. Import the library
 
 ```js
-import { searchWithGemini } from "vibe-search-gemini";
+import { searchWithGemini } from "vibe-search";
 ```
 
-### 2. 准备 API Key
+### 2. Prepare the API Key
 
-获取 Gemini API Key：https://aistudio.google.com/apikey
+Get a Gemini API Key: https://aistudio.google.com/apikey
 
 ```js
-// 方式一：环境变量（推荐）
+// Option A: Environment variable (recommended)
 const apiKey = process.env.GEMINI_API_KEY;
 
-// 方式二：直接传入（不推荐用于生产环境）
+// Option B: Pass directly (not recommended for production)
 const apiKey = "your-api-key-here";
 ```
 
-### 3. 调用搜索
+### 3. Perform a search
 
 ```js
 const result = await searchWithGemini({
   content: [
-    "Node.js 官网：https://nodejs.org/",
-    "Google AI Studio：https://aistudio.google.com/",
-    "GitHub 仓库：https://github.com/google-gemini/generative-ai-js"
+    "Node.js official website: https://nodejs.org/",
+    "Google AI Studio: https://aistudio.google.com/",
+    "GitHub repository: https://github.com/google-gemini/generative-ai-js"
   ],
-  query: "如何使用 Gemini API？",
+  query: "How to use the Gemini API?",
   apiKey: apiKey
 });
 
-console.log("搜索结果：", result.answers);
-console.log("原始响应：", result.raw);
+console.log("Answers:", result.answers);
+console.log("Raw response:", result.raw);
 ```
 
-## 高级用法
+## Advanced Usage
 
-### 自定义模型
+### Custom model
 
 ```js
 const result = await searchWithGemini({
-  content: "你的内容",
-  query: "搜索查询",
+  content: "your content",
+  query: "your search query",
   apiKey: apiKey,
-  model: "gemini-2.5-flash",  // 默认模型
-  maxTokens: 4096             // 最大输出 token 数
+  model: "gemini-2.5-flash",  // default model
+  maxTokens: 4096              // maximum output tokens
 });
 ```
 
-### 处理大量内容
+### Handling large content
 
 ```js
 const largeContent = [
-  "文档1的内容...",
-  "文档2的内容...",
-  "文档3的内容..."
+  "Document 1 content...",
+  "Document 2 content...",
+  "Document 3 content..."
 ];
 
 const result = await searchWithGemini({
-  content: largeContent,  // 会自动合并为单个字符串
-  query: "查找特定信息",
+  content: largeContent,  // will be concatenated into a single string automatically
+  query: "Find specific information",
   apiKey: apiKey
 });
 ```
 
-### 错误处理
+### Error handling
 
 ```js
 try {
   const result = await searchWithGemini({
-    content: "内容",
-    query: "查询",
+    content: "content",
+    query: "query",
     apiKey: apiKey
   });
   console.log(result.answers);
 } catch (error) {
   if (error.message.includes("Missing")) {
-    console.error("参数缺失：", error.message);
+    console.error("Missing parameter:", error.message);
   } else if (error.message.includes("API")) {
-    console.error("API 调用失败：", error.message);
+    console.error("API call failed:", error.message);
   } else {
-    console.error("未知错误：", error.message);
+    console.error("Unknown error:", error.message);
   }
 }
 ```
 
-## 完整示例
+## Full Example
 
 ```js
-import { searchWithGemini } from "vibe-search-gemini";
+import { searchWithGemini } from "vibe-search";
 import dotenv from "dotenv";
 
-// 加载环境变量
+// Load environment variables
 dotenv.config();
 
 async function main() {
   const apiKey = process.env.GEMINI_API_KEY;
   
   if (!apiKey) {
-    console.error("请设置 GEMINI_API_KEY 环境变量");
+    console.error("Please set the GEMINI_API_KEY environment variable");
     process.exit(1);
   }
 
   const content = [
-    "技术文档：React 是一个用于构建用户界面的 JavaScript 库",
-    "官方网站：https://reactjs.org/",
-    "学习资源：https://react.dev/learn",
-    "GitHub：https://github.com/facebook/react"
+    "Tech doc: React is a JavaScript library for building UIs",
+    "Official website: https://reactjs.org/",
+    "Learning resources: https://react.dev/learn",
+    "GitHub: https://github.com/facebook/react"
   ];
 
   try {
     const result = await searchWithGemini({
       content,
-      query: "React 学习资源",
+      query: "React learning resources",
       apiKey,
       model: "gemini-2.5-flash"
     });
 
-    console.log("找到的答案：");
+    console.log("Answers:");
     result.answers.forEach((answer, index) => {
       console.log(`${index + 1}. ${answer}`);
     });
 
   } catch (error) {
-    console.error("搜索失败：", error.message);
+    console.error("Search failed:", error.message);
   }
 }
 
 main();
 ```
 
-## 环境变量设置
+## Environment Variables
 
 ### Windows PowerShell
 ```powershell
@@ -176,68 +159,67 @@ export GEMINI_API_KEY=your-api-key
 node your-script.js
 ```
 
-### .env 文件
+### .env file
 
-创建 `.env` 文件：
+Create a `.env` file:
 ```
 GEMINI_API_KEY=your-api-key
 ```
 
-然后在代码中：
+Then in your code:
 ```js
 import dotenv from "dotenv";
 dotenv.config();
 ```
 
-## 故障排除
+## Troubleshooting
 
-### 常见错误
+### Common errors
 
 1. **"Missing apiKey"**
-   - 确保已设置 API Key
-   - 检查环境变量名称是否正确
+   - Ensure the API key is set
+   - Verify the environment variable name
 
 2. **"Missing content"**
-   - 确保传入了 content 参数
-   - content 不能为空字符串或空数组
+   - Ensure the `content` parameter is provided
+   - `content` must not be an empty string or empty array
 
 3. **"Missing query"**
-   - 确保传入了 query 参数
-   - query 不能为空字符串
+   - Ensure the `query` parameter is provided
+   - `query` must not be an empty string
 
-4. **API 调用失败**
-   - 检查网络连接
-   - 验证 API Key 是否有效
-   - 确认 API 配额是否充足
+4. **API call failed**
+   - Check network connectivity
+   - Verify the API key is valid
+   - Ensure you have sufficient quota
 
-### 调试技巧
+### Debugging tips
 
-1. 启用详细日志：
+1. Log the raw model output:
 ```js
 const result = await searchWithGemini({
-  // ... 其他参数
+  // ... other params
 });
-console.log("原始响应：", result.raw);  // 查看模型的原始输出
+console.log("Raw response:", result.raw);
 ```
 
-2. 测试 API Key：
+2. Test an API key quickly:
 ```js
-// 简单测试
 try {
   const result = await searchWithGemini({
     content: "test",
     query: "test",
     apiKey: "your-key"
   });
-  console.log("API Key 有效");
+  console.log("API key works");
 } catch (error) {
-  console.log("API Key 问题：", error.message);
+  console.log("API key issue:", error.message);
 }
 ```
 
-## 更多示例
+## More Examples
 
-查看 `examples/` 目录中的更多示例：
-- `examples/run.js` - 基本使用示例
-- `examples/evaluate.js` - 评测脚本
-- `examples/install-test.js` - 安装测试
+See the `examples/` directory:
+- `examples/run.js` - Basic usage example
+- `examples/evaluate.js` - Evaluation script
+- `examples/install-test.js` - Installation test

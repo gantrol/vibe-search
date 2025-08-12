@@ -2,36 +2,12 @@
 
 [![中文文档](https://img.shields.io/badge/文档-中文-blue.svg)](README.zh-CN.md)
 
-LLM vibe search: a Node.js library that uses Google Gemini to find relevant websites directly from your provided content.
+LLM vibe search: a new `string.search` which can `search` anything you need.
 
 ## Install
 
-### NPM
-
 ```bash
 npm i vibe-search
-```
-
-### From GitHub
-
-```bash
-# Install directly from GitHub
-npm install git+https://github.com/gantrol/vibe-search.git
-
-# Or with a specific branch/tag
-npm install git+https://github.com/gantrol/vibe-search.git#main
-
-# Or using yarn
-yarn add git+https://github.com/gantrol/vibe-search.git
-```
-
-### For Development
-
-```bash
-# Clone and install dependencies
-git clone https://github.com/gantrol/vibe-search.git
-cd vibe-search
-npm install
 ```
 
 ## Quick start
