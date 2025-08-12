@@ -1,0 +1,29 @@
+{
+    "name": "vibe-search-gemini",
+    "version": "0.0.1",
+    "description": "抽卡搜索：直接用 Gemini 大模型在给定内容中搜索相关网站/证据的 Node.js 库。",
+    "type": "module",
+    "main": "src/index.js",
+    "exports": {
+        ".": "./src/index.js"
+    },
+    "scripts": {
+        "start": "node examples/run.js",
+        "eval": "node examples/evaluate.js",
+        "lint": "node -e \"console.log('No linter configured')\""
+    },
+    "keywords": [
+        "gemini",
+        "google",
+        "genai",
+        "search",
+        "llm",
+        "抽卡搜索"
+    ],
+    "author": "gantrol",
+    "license": "MIT",
+    "dependencies": {
+        "@google/genai": "^0.3.0",
+        "dotenv": "^16.4.5"
+    }
+}

@@ -1,0 +1,57 @@
+{
+  "config": {
+    "k": 3,
+    "model": "gemini-2.5-flash",
+    "dataset": "examples\\dataset.sample.json",
+    "dry": false
+  },
+  "rows": [
+    {
+      "name": "Node & Gemini (EN)",
+      "k": 3,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "ap": 1,
+      "mrr": 1,
+      "ndcg": 1,
+      "ms": 5963,
+      "cache": ""
+    },
+    {
+      "name": "Web Dev (EN)",
+      "k": 2,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "ap": 1,
+      "mrr": 1,
+      "ndcg": 1,
+      "ms": 4969,
+      "cache": ""
+    },
+    {
+      "name": "find Rs in StrawbeRry",
+      "k": 3,
+      "precision": 0,
+      "recall": 0,
+      "f1": 0,
+      "ap": 0,
+      "mrr": 0,
+      "ndcg": 0,
+      "ms": 6227,
+      "cache": "Y"
+    }
+  ],
+  "summary": {
+    "count": 3,
+    "precision": 0.6667,
+    "recall": 0.6667,
+    "f1": 0.6667,
+    "map": 0.6667,
+    "mrr": 0.6667,
+    "ndcg": 0.6667,
+    "avg_ms": 5720
+  },
+  "ts": "2025-08-12T04:59:38.902Z"
+}

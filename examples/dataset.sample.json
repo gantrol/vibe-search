@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Node & Gemini (EN)",
+    "content": [
+      "Node.js docs: https://nodejs.org/en/",
+      "Google AI Studio: https://aistudio.google.com/",
+      "Generative AI JS: https://github.com/google-gemini/generative-ai-js"
+    ],
+    "query": "Where to learn @google/genai and Node.js? Find URL",
+    "truth": [
+      "https://nodejs.org/en/",
+      "https://aistudio.google.com/",
+      "https://github.com/google-gemini/generative-ai-js"
+    ]
+  },
+  {
+  "name": "find Rs in StrawbeRry",
+  "type": "text",
+    "content": [
+        "StrawbeRry"
+    ],
+    "query": "R,r",
+    "truth": [
+      "r",
+      "R",
+      "r"
+    ]
+  }
+]

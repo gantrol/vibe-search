@@ -1,0 +1,118 @@
+[
+  {
+    "name": "General Search Engines",
+    "content": [
+      "Try these search engines:",
+      "Google: https://www.google.com/",
+      "Bing search https://www.bing.com",
+      "DuckDuckGo (privacy): https://duckduckgo.com/?va=z&t=hc"
+    ],
+    "query": "通用搜索引擎有哪些？",
+    "truth": [
+      "https://www.google.com/",
+      "https://www.bing.com/",
+      "https://duckduckgo.com/?va=z&t=hc"
+    ]
+  },
+  {
+    "name": "@google/genai Node SDK",
+    "content": [
+      "NPM: https://www.npmjs.com/package/@google/genai",
+      "GitHub: HTTPS://GITHUB.COM/GOOGLE-GEMINI/GENERATIVE-AI-JS",
+      "Docs: https://aistudio.google.com/ (set up API keys)"
+    ],
+    "query": "@google/genai 的 Node.js 包与源码地址？",
+    "truth": [
+      "https://www.npmjs.com/package/@google/genai",
+      "https://github.com/google-gemini/generative-ai-js",
+      "https://aistudio.google.com/"
+    ]
+  },
+  {
+    "name": "Web Frameworks",
+    "content": [
+      "React: https://react.dev/",
+      "Vue: https://vuejs.org/",
+      "Svelte: https://svelte.dev/docs",
+      "Some blog: https://myblog.example.com/tutorial"
+    ],
+    "query": "主流前端框架官方文档",
+    "truth": [
+      "https://react.dev/",
+      "https://vuejs.org/",
+      "https://svelte.dev/docs"
+    ]
+  },
+  {
+    "name": "MDN CSS Topics",
+    "content": [
+      "Flexbox: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout",
+      "Grid: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/",
+      "Selectors: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors"
+    ],
+    "query": "MDN CSS 布局相关文档",
+    "truth": [
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors"
+    ]
+  },
+  {
+    "name": "URL Fragments & Tracking",
+    "content": [
+      "Guide: https://example.com/docs/getting-started/#install",
+      "Marketing: https://example.org/landing?utm_source=ads&utm_medium=cpc",
+      "Reference: https://example.net/ref#top"
+    ],
+    "query": "列出页面链接（包含带参数或锚点的）",
+    "truth": [
+      "https://example.com/docs/getting-started/",
+      "https://example.org/landing?utm_source=ads&utm_medium=cpc",
+      "https://example.net/ref"
+    ]
+  },
+  {
+    "name": "Ambiguous Python",
+    "content": [
+      "Python 官网（请找到官方）",
+      "也有人用 PyPy 作为解释器: https://www.pypy.org/",
+      "Anaconda: https://www.anaconda.com/",
+      "python.org: http://PYTHON.ORG/"
+    ],
+    "query": "Python 官方网站是哪一个？",
+    "truth": [
+      "http://python.org/"
+    ]
+  },
+  {
+    "name": "Code Blocks Containing URLs",
+    "content": [
+      "Here is a code block with links:",
+      "```",
+      "curl https://api.example.com/v1",
+      "# See docs: https://docs.example.com/api?v=2",
+      "```"
+    ],
+    "query": "列出代码块里的 URL",
+    "truth": [
+      "https://api.example.com/v1",
+      "https://docs.example.com/api?v=2"
+    ]
+  },
+  {
+    "name": "Lots of Noise",
+    "content": [
+      "noise: https://spam.example.com/a",
+      "noise: https://spam.example.com/b",
+      "noise: https://ads.example.net/?x=1",
+      "real: https://nextjs.org/docs",
+      "real: https://react.dev/",
+      "noise: https://tracking.example.org/campaign?id=123"
+    ],
+    "query": "React 与 Next.js 文档",
+    "truth": [
+      "https://react.dev/",
+      "https://nextjs.org/docs"
+    ]
+  }
+]
