@@ -1,6 +1,6 @@
 {
     "name": "vibe-search",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "LLM-vibe search over your text content using Google Gemini (ESM)",
     "type": "module",
     "main": "src/index.js",

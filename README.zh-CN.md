@@ -1,4 +1,4 @@
-# vibe-search-gemini
+# vibe-search
 
 LLM 抽卡搜索：使用 Google Gemini 在给定语料中直接检索相关网站的 Node.js 库。
 
@@ -8,21 +8,21 @@ LLM 抽卡搜索：使用 Google Gemini 在给定语料中直接检索相关网�
 
 ```bash
 # 直接从 GitHub 安装
-npm install git+https://github.com/gantrol/vibe-search-gemini.git
+npm install git+https://github.com/gantrol/vibe-search.git
 
 # 或指定分支/标签
-npm install git+https://github.com/gantrol/vibe-search-gemini.git#main
+npm install git+https://github.com/gantrol/vibe-search.git#main
 
 # 或使用 yarn
-yarn add git+https://github.com/gantrol/vibe-search-gemini.git
+yarn add git+https://github.com/gantrol/vibe-search.git
 ```
 
 ### 开发环境
 
 ```bash
 # 克隆并安装依赖
-git clone https://github.com/gantrol/vibe-search-gemini.git
-cd vibe-search-gemini
+git clone https://github.com/gantrol/vibe-search.git
+cd vibe-search
 npm install
 ```
 
@@ -41,7 +41,7 @@ npm install
 示例：
 
 ```js
-import { searchWithGemini } from "vibe-search-gemini";
+import { searchWithGemini } from "vibe-search";
 
 const { answers, raw } = await searchWithGemini({
   content: [

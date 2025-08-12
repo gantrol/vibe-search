@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { searchWithGemini } from 'vibe-search-gemini';
+import { searchWithGemini } from 'vibe-search';
 
 // Sample content for demonstration
 const SAMPLE_CONTENT = `Node.js official website: https://nodejs.org/
