@@ -78,6 +78,23 @@ Run the example script:
 $env:GEMINI_API_KEY = "<your-key>"; node examples/run.js
 ```
 
+### React Example
+
+A complete React web application example is available:
+
+```bash
+# Navigate to React example
+cd examples/react-app
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+The React app provides an interactive interface for testing the search functionality with sample content and real-time results.
+
 ## Evaluation
 
 An evaluation script is provided to compute common IR metrics:

@@ -60,6 +60,23 @@ console.log(answers);
 $env:GEMINI_API_KEY = "<your-key>"; node examples/run.js
 ```
 
+### React 示例
+
+提供完整的 React Web 应用示例：
+
+```bash
+# 进入 React 示例目录
+cd examples/react-app
+
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+```
+
+React 应用提供交互式界面，可以使用示例内容测试搜索功能并查看实时结果。
+
 ## 评测
 
 提供评测脚本，支持：

@@ -23,6 +23,7 @@
         "eval": "node examples/evaluate.js",
         "test": "node examples/smoke.mjs",
         "test:install": "node examples/install-test.js",
+        "test:react": "node examples/test-react-example.js",
         "check": "node scripts/pre-release-check.js",
         "lint": "node -e \"console.log('No linter configured')\"",
         "prepublishOnly": "echo 'This package is not published to npm. Install via GitHub URL.'"
