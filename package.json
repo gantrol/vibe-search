@@ -1,6 +1,6 @@
 {
     "name": "vibe-search",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "LLM-vibe search over your text content using Google Gemini (ESM)",
     "type": "module",
     "main": "src/index.js",
@@ -26,7 +26,7 @@
         "test:react": "node examples/test-react-example.js",
         "check": "node scripts/pre-release-check.js",
         "lint": "node -e \"console.log('No linter configured')\"",
-    "prepublishOnly": "npm run check && npm test"
+        "prepublishOnly": "npm run check && npm test"
     },
     "keywords": [
         "gemini",
