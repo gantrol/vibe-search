@@ -62,8 +62,9 @@ function uniqueOrder(list) {
   return out;
 }
 
-// Metrics
+// Metrics (multiset-aware for text tasks)
 function precisionRecallF1(pred, truth) {
+  // Kept for reference; not used in text mode where duplicates matter.
   const setPred = new Set(pred);
   const setTruth = new Set(truth);
   let tp = 0; setPred.forEach((x) => { if (setTruth.has(x)) tp++; });
@@ -75,28 +76,50 @@ function precisionRecallF1(pred, truth) {
   return { precision, recall, f1, tp, fp, fn };
 }
 
-function averagePrecision(pred, truth) {
-  const setTruth = new Set(truth);
-  let hit = 0; let sumPrec = 0;
-  pred.forEach((p, idx) => {
-    if (setTruth.has(p)) { hit++; sumPrec += hit / (idx + 1); }
-  });
-  return setTruth.size ? (sumPrec / setTruth.size) : 0;
+function averagePrecisionMS(pred, truth) {
+  // Multiset AP: each prediction counts only up to remaining truth multiplicity.
+  const rem = new Map();
+  let truthCount = 0;
+  for (const t of truth) { rem.set(t, (rem.get(t) || 0) + 1); truthCount++; }
+  if (!truthCount) return 0;
+  let hits = 0; let sumPrec = 0;
+  for (let i = 0; i < pred.length; i++) {
+    const p = pred[i];
+    const cnt = rem.get(p) || 0;
+    if (cnt > 0) {
+      hits++;
+      sumPrec += hits / (i + 1);
+      rem.set(p, cnt - 1);
+    }
+  }
+  return sumPrec / truthCount;
 }
 
-function reciprocalRank(pred, truth) {
-  const setTruth = new Set(truth);
+function reciprocalRankMS(pred, truth) {
+  const rem = new Map();
+  for (const t of truth) rem.set(t, (rem.get(t) || 0) + 1);
   for (let i = 0; i < pred.length; i++) {
-    if (setTruth.has(pred[i])) return 1 / (i + 1);
+    const p = pred[i];
+    const cnt = rem.get(p) || 0;
+    if (cnt > 0) return 1 / (i + 1);
   }
   return 0;
 }
 
-function ndcgAtK(pred, truth, k = pred.length) {
-  const setTruth = new Set(truth);
-  const gains = pred.slice(0, k).map((p) => setTruth.has(p) ? 1 : 0);
+function ndcgAtKMS(pred, truth, k = pred.length) {
+  const rem = new Map();
+  let truthCount = 0;
+  for (const t of truth) { rem.set(t, (rem.get(t) || 0) + 1); truthCount++; }
+  if (!truthCount) return 0;
+  const gains = [];
+  for (let i = 0; i < Math.min(k, pred.length); i++) {
+    const p = pred[i];
+    const cnt = rem.get(p) || 0;
+    if (cnt > 0) { gains.push(1); rem.set(p, cnt - 1); } else { gains.push(0); }
+  }
   const dcg = gains.reduce((acc, g, i) => acc + (g / Math.log2(i + 2)), 0);
-  const ideal = Array(Math.min(k, truth.length)).fill(1).reduce((acc, g, i) => acc + (g / Math.log2(i + 2)), 0);
+  const idealOnes = Math.min(k, truthCount);
+  const ideal = Array(idealOnes).fill(1).reduce((acc, g, i) => acc + (g / Math.log2(i + 2)), 0);
   return ideal > 0 ? dcg / ideal : 0;
 }
 
@@ -239,8 +262,8 @@ async function main() {
     ];
   }
 
-  // Normalize truths
-  dataset = dataset.map((d) => ({ ...d, truth: uniqueOrder((d.truth || []).map(x => String(x))) }));
+  // Normalize truths (do NOT dedupe; duplicates matter for text-occurrence tasks)
+  dataset = dataset.map((d) => ({ ...d, truth: (d.truth || []).map(x => String(x)) }));
 
   const cacheDir = path.join(__dirname, ".cache");
   if (!args.nocache) ensureDir(cacheDir);
@@ -258,10 +281,13 @@ async function main() {
     if (r?.error) { rows.push({ name: item.name, error: r.error }); continue; }
   const pred = (r.pred || []).map(x => String(x));
   const truth = item.truth;
+  if (item.name === 'find Rs in StrawbeRry') {
+    console.log(`[DEBUG] ${item.name}: pred=${JSON.stringify(pred)}, truth=${JSON.stringify(truth)}`);
+  }
   const prf = prfForText(pred, truth);
-  const ap = averagePrecision(pred, truth);
-  const rr = reciprocalRank(pred, truth);
-  const ndcg = ndcgAtK(pred, truth, args.k);
+  const ap = averagePrecisionMS(pred, truth);
+  const rr = reciprocalRankMS(pred, truth);
+  const ndcg = ndcgAtKMS(pred, truth, args.k);
     rows.push({ name: item.name, k: pred.length, precision: +prf.precision.toFixed(3), recall: +prf.recall.toFixed(3), f1: +prf.f1.toFixed(3), ap: +ap.toFixed(3), mrr: +rr.toFixed(3), ndcg: +ndcg.toFixed(3), ms: r.elapsedMs, cache: r.fromCache ? "Y" : "" });
     sumP += prf.precision; sumR += prf.recall; sumF1 += prf.f1; sumAP += ap; sumRR += rr; sumnDCG += ndcg; sumTime += r.elapsedMs; count++;
   }

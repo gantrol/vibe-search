@@ -14,7 +14,7 @@ function normalizeContent(content) {
 }
 
 function buildTextPrompt({ corpus, query }) {
-  return `You are a careful extractor. Given the corpus and a query describing what to extract, return JSON only with:
+  return `You are a careful search engine. return JSON only with:
 {
   "answers": ["..."]
 }
@@ -22,7 +22,7 @@ function buildTextPrompt({ corpus, query }) {
 Examples:
 Corpus: ABcabCB
 Query: B,c
-Expected JSON: { "answers": ["B","c","C"] }
+Expected JSON: { "answers": ["B","c","B"] }
 
 User Query: ${query}
 ---

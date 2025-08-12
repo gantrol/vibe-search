@@ -1,7 +1,7 @@
 {
   "config": {
     "k": 3,
-    "model": "gemini-2.5-flash",
+    "model": "default",
     "dataset": "examples\\dataset.sample.json",
     "dry": false
   },
@@ -15,19 +15,19 @@
       "ap": 1,
       "mrr": 1,
       "ndcg": 1,
-      "ms": 6061,
+      "ms": 6914,
       "cache": ""
     },
     {
       "name": "find Rs in StrawbeRry",
-      "k": 2,
+      "k": 3,
       "precision": 1,
       "recall": 1,
       "f1": 1,
       "ap": 1,
       "mrr": 1,
       "ndcg": 1,
-      "ms": 16523,
+      "ms": 5302,
       "cache": ""
     }
   ],
@@ -39,7 +39,7 @@
     "map": 1,
     "mrr": 1,
     "ndcg": 1,
-    "avg_ms": 11292
+    "avg_ms": 6108
   },
-  "ts": "2025-08-12T05:26:31.577Z"
+  "ts": "2025-08-12T05:45:50.587Z"
 }
