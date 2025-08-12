@@ -72,9 +72,10 @@ checks.forEach(check => {
 
 const failedChecks = checks.filter(check => check.status === "✗");
 if (failedChecks.length === 0) {
-  console.log("\n🎉 All checks passed! Package is ready for GitHub installation.");
-  console.log("\nTo install this package:");
-  console.log("npm install git+https://github.com/gantrol/vibe-search-gemini.git");
+  console.log("\n🎉 All checks passed! Package is ready for publishing or installation.");
+  console.log("\nExamples:");
+  console.log("- npm install vibe-search-gemini # after publishing");
+  console.log("- npm install git+https://github.com/gantrol/vibe-search-gemini.git # GitHub");
 } else {
   console.log(`\n❌ ${failedChecks.length} checks failed. Please fix the issues above.`);
   process.exit(1);

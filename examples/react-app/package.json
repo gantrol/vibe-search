@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "vibe-search-gemini": "git+https://github.com/gantrol/vibe-search-gemini.git",
-    "dotenv": "^16.4.5"
+    "vibe-search": "git+https://github.com/gantrol/vibe-search.git"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",

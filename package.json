@@ -1,19 +1,19 @@
 {
-    "name": "vibe-search-gemini",
-    "version": "0.0.2",
-    "description": "Just search with gemini, making by GPT5, design by gantrol",
+    "name": "vibe-search",
+    "version": "0.1.0",
+    "description": "LLM-vibe search over your text content using Google Gemini (ESM)",
     "type": "module",
     "main": "src/index.js",
     "module": "src/index.js",
+    "types": "src/index.d.ts",
     "exports": {
         ".": {
-            "import": "./src/index.js",
-            "require": "./src/index.js"
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js"
         }
     },
     "files": [
         "src/",
-        "examples/",
         "README.md",
         "README.zh-CN.md",
         "LICENSE"
@@ -26,7 +26,7 @@
         "test:react": "node examples/test-react-example.js",
         "check": "node scripts/pre-release-check.js",
         "lint": "node -e \"console.log('No linter configured')\"",
-        "prepublishOnly": "echo 'This package is not published to npm. Install via GitHub URL.'"
+    "prepublishOnly": "npm run check && npm test"
     },
     "keywords": [
         "gemini",
@@ -47,6 +47,9 @@
     "homepage": "https://github.com/gantrol/vibe-search-gemini#readme",
     "engines": {
         "node": ">=18.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
     },
     "dependencies": {
         "@google/genai": "^0.3.0",
