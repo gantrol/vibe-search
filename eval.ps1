@@ -1,1 +1,1 @@
-node examples/evaluate.js --dataset examples/dataset.sample.json --k 3 --concurrency
+node examples/evaluate.js --dataset examples/dataset.sample.json --k 3 --concurrency --nocache

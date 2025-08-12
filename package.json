@@ -1,29 +1,56 @@
 {
     "name": "vibe-search-gemini",
-    "version": "0.0.1",
-    "description": "抽卡搜索：直接用 Gemini 大模型在给定内容中搜索相关网站/证据的 Node.js 库。",
+    "version": "0.0.2",
+    "description": "Just search with gemini, making by GPT5, design by gantrol",
     "type": "module",
     "main": "src/index.js",
+    "module": "src/index.js",
     "exports": {
-        ".": "./src/index.js"
+        ".": {
+            "import": "./src/index.js",
+            "require": "./src/index.js"
+        }
     },
+    "files": [
+        "src/",
+        "examples/",
+        "README.md",
+        "README.zh-CN.md",
+        "LICENSE"
+    ],
     "scripts": {
         "start": "node examples/run.js",
         "eval": "node examples/evaluate.js",
-        "lint": "node -e \"console.log('No linter configured')\""
+        "test": "node examples/smoke.mjs",
+        "test:install": "node examples/install-test.js",
+        "check": "node scripts/pre-release-check.js",
+        "lint": "node -e \"console.log('No linter configured')\"",
+        "prepublishOnly": "echo 'This package is not published to npm. Install via GitHub URL.'"
     },
     "keywords": [
         "gemini",
         "google",
         "genai",
         "search",
-        "llm",
-        "抽卡搜索"
+        "llm"
     ],
     "author": "gantrol",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/gantrol/vibe-search-gemini.git"
+    },
+    "bugs": {
+        "url": "https://github.com/gantrol/vibe-search-gemini/issues"
+    },
+    "homepage": "https://github.com/gantrol/vibe-search-gemini#readme",
+    "engines": {
+        "node": ">=18.0.0"
+    },
     "dependencies": {
         "@google/genai": "^0.3.0",
         "dotenv": "^16.4.5"
-    }
+    },
+    "peerDependencies": {},
+    "devDependencies": {}
 }

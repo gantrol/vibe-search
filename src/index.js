@@ -73,4 +73,5 @@ export async function searchWithGemini({ content, query, apiKey, model = DEFAULT
   return { answers, raw: text };
 }
 
-export default { searchWithGemini };
+// Default export for CommonJS compatibility
+export default searchWithGemini;

@@ -1,5 +1,18 @@
 [
   {
+  "name": "find Rs in StrawbeRry",
+  "type": "text",
+    "content": [
+        "StrawbeRry"
+    ],
+    "query": "R,r",
+    "truth": [
+      "r",
+      "R",
+      "r"
+    ]
+  },
+  {
     "name": "General Search Engines",
     "content": [
       "Try these search engines:",

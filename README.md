@@ -1,30 +1,52 @@
 # vibe-search-gemini
 
+[![中文文档](https://img.shields.io/badge/文档-中文-blue.svg)](README.zh-CN.md)
+
 LLM “card-draw” search: a Node.js library that uses Google Gemini to find relevant websites directly from your provided content.
 
 ## Install
 
-```powershell
-# In the project root
-npm i
+### From GitHub (Recommended)
+
+```bash
+# Install directly from GitHub
+npm install git+https://github.com/gantrol/vibe-search-gemini.git
+
+# Or with a specific branch/tag
+npm install git+https://github.com/gantrol/vibe-search-gemini.git#main
+
+# Or using yarn
+yarn add git+https://github.com/gantrol/vibe-search-gemini.git
+```
+
+### For Development
+
+```bash
+# Clone and install dependencies
+git clone https://github.com/gantrol/vibe-search-gemini.git
+cd vibe-search-gemini
+npm install
 ```
 
 ## Quick start
 
 The library exposes `searchWithGemini({ content, query, apiKey, model? })`.
 
-- Inputs
-  - content: string | string[] — the corpus to search within
-  - query: string — the search query
-  - apiKey: string — your Gemini API key
-  - model?: string — model name (default: `gemini-2.5-flash`)
-- Output
-  - `{ answers: string[], raw }`
+### API Reference
 
-Example:
+- **Inputs**
+  - `content: string | string[]` — the corpus to search within
+  - `query: string` — the search query
+  - `apiKey: string` — your Gemini API key
+  - `model?: string` — model name (default: `gemini-2.5-flash`)
+  - `maxTokens?: number` — max output tokens (default: 2048)
+- **Output**
+  - `{ answers: string[], raw: string }`
+
+### Basic Usage
 
 ```js
-import { searchWithGemini } from "./src/index.js";
+import { searchWithGemini } from "vibe-search-gemini";
 
 const { answers, raw } = await searchWithGemini({
   content: [
@@ -35,6 +57,18 @@ const { answers, raw } = await searchWithGemini({
   apiKey: process.env.GEMINI_API_KEY,
 });
 console.log(answers);
+```
+
+### Test Installation
+
+After installing the package, you can test it works:
+
+```bash
+# Test the package installation
+node examples/install-test.js
+
+# Run the full example (requires API key)
+GEMINI_API_KEY=your_key node examples/run.js
 ```
 
 Run the example script:
@@ -93,7 +127,3 @@ Notes:
 - Node.js 18+ recommended
 - A valid Gemini API key and active billing
 - Dependency: `@google/genai`
-
-## Related
-
-For Chinese documentation, see `README.zh-CN.md`.
